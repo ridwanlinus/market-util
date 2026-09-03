@@ -10,7 +10,7 @@
       "use": "vercel-php@0.8.0"
     },
     {
-      "src": "api/test_config.php",
+      "src": "api/test_check.php",
       "use": "vercel-php@0.8.0"
     },
     {
@@ -36,8 +36,8 @@
       "dest": "/api/test2.php"
     },
     {
-      "src": "/test_config$",
-      "dest": "/api/test_config.php"
+      "src": "/test_check$",
+      "dest": "/api/test_check.php"
     },
     {
       "src": "/test5$",
