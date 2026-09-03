@@ -1,47 +1,15 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/test_minimal.php",
-      "use": "vercel-php@0.8.0"
-    },
-    {
-      "src": "api/index.php",
-      "use": "vercel-php@0.8.0"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
+    { "src": "api/index.php", "use": "vercel-php@0.8.0" },
+    { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/test_min$",
-      "dest": "/api/test_minimal.php"
-    },
-    {
-      "src": "/(favicon\\.ico|robots\\.txt)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/build/(.*)",
-      "dest": "/public/build/$1"
-    },
-    {
-      "src": "/css/(.*)",
-      "dest": "/public/css/$1"
-    },
-    {
-      "src": "/js/(.*)",
-      "dest": "/public/js/$1"
-    },
-    {
-      "src": "/storage/(.*)",
-      "dest": "/public/storage/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
-    }
+    { "src": "/(favicon\\.ico|robots\\.txt)", "dest": "/public/$1" },
+    { "src": "/build/(.*)", "dest": "/public/build/$1" },
+    { "src": "/css/(.*)", "dest": "/public/css/$1" },
+    { "src": "/js/(.*)", "dest": "/public/js/$1" },
+    { "src": "/storage/(.*)", "dest": "/public/storage/$1" },
+    { "src": "/(.*)", "dest": "/api/index.php" }
   ]
 }
