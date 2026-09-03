@@ -11,6 +11,9 @@
 
 define('LARAVEL_START', microtime(true));
 
+// Ensure writable directories exist on Vercel serverless
+@mkdir('/tmp/views', 0755, true);
+
 require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
