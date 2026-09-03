@@ -1,52 +1,47 @@
 <?php
+// Minimal Laravel boot test
+define('LARAVEL_START', microtime(true));
+@mkdir('/tmp/views', 0755, true);
+
 header('Content-Type: application/json');
 $results = [];
 
 // Step 1: autoloader
-$results['step1_autoload'] = 'checking...';
-$autoloadFile = __DIR__.'/../vendor/autoload.php';
-if (file_exists($autoloadFile)) {
-    try {
-        require $autoloadFile;
-        $results['step1_autoload'] = 'OK - ' . count(get_declared_classes()) . ' classes loaded';
-    } catch (\Throwable $e) {
-        $results['step1_autoload'] = 'FAIL - ' . $e->getMessage();
-    }
-} else {
-    $results['step1_autoload'] = 'FAIL - vendor/autoload.php not found at ' . $autoloadFile;
+try {
+    require __DIR__.'/../vendor/autoload.php';
+    $results['step1'] = 'OK - ' . count(get_declared_classes()) . ' classes';
+} catch (\Throwable $e) {
+    $results['step1'] = 'FAIL - ' . $e->getMessage();
+    echo json_encode($results);
+    exit;
 }
 
-// Step 2: bootstrap app
-$results['step2_bootstrap'] = 'checking...';
-$bootstrapFile = __DIR__.'/../bootstrap/app.php';
-if (file_exists($bootstrapFile)) {
-    try {
-        $app = require $bootstrapFile;
-        $results['step2_bootstrap'] = 'OK - app class: ' . get_class($app);
-    } catch (\Throwable $e) {
-        $results['step2_bootstrap'] = 'FAIL - ' . get_class($e) . ': ' . $e->getMessage();
-    }
-} else {
-    $results['step2_bootstrap'] = 'FAIL - bootstrap/app.php not found';
+// Step 2: bootstrap
+try {
+    $app = require __DIR__.'/../bootstrap/app.php';
+    $results['step2'] = 'OK - ' . get_class($app);
+} catch (\Throwable $e) {
+    $results['step2'] = 'FAIL - ' . get_class($e) . ': ' . $e->getMessage();
+    echo json_encode($results);
+    exit;
 }
 
 // Step 3: config
-$results['step3_config'] = 'checking...';
 try {
-    $configPath = __DIR__.'/../config';
-    $results['step3_config'] = 'OK - ' . count(scandir($configPath)) . ' config files';
+    $results['step3'] = 'OK - view.compiled = ' . config('view.compiled');
 } catch (\Throwable $e) {
-    $results['step3_config'] = 'FAIL - ' . $e->getMessage();
+    $results['step3'] = 'FAIL - ' . $e->getMessage();
+    echo json_encode($results);
+    exit;
 }
 
 // Step 4: handle request
-$results['step4_request'] = 'checking...';
 try {
     $request = \Illuminate\Http\Request::capture();
     $response = $app->handleRequest($request);
-    $results['step4_request'] = 'OK - status: ' . $response->getStatusCode() . ', content-length: ' . strlen($response->getContent());
+    $results['step4'] = 'OK - status: ' . $response->getStatusCode() . ', length: ' . strlen($response->getContent());
 } catch (\Throwable $e) {
-    $results['step4_request'] = 'FAIL - ' . get_class($e) . ': ' . $e->getMessage();
+    $results['step4'] = 'FAIL - ' . get_class($e) . ': ' . $e->getMessage();
 }
 
 echo json_encode($results, JSON_PRETTY_PRINT);

@@ -2,6 +2,7 @@
   "version": 2,
   "builds": [
     { "src": "api/test.php", "use": "vercel-php@0.8.0" },
+    { "src": "api/test2.php", "use": "vercel-php@0.8.0" },
     { "src": "api/test3.php", "use": "vercel-php@0.8.0" },
     { "src": "api/test4.php", "use": "vercel-php@0.8.0" },
     { "src": "api/index.php", "use": "vercel-php@0.8.0" },
@@ -9,6 +10,7 @@
   ],
   "routes": [
     { "src": "/test$", "dest": "/api/test.php" },
+    { "src": "/test2$", "dest": "/api/test2.php" },
     { "src": "/test3$", "dest": "/api/test3.php" },
     { "src": "/test4$", "dest": "/api/test4.php" },
     { "src": "/(favicon\\.ico|robots\\.txt)", "dest": "/public/$1" },
