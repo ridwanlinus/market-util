@@ -55,6 +55,7 @@ File yang disertakan:
 2. **Cold start** — boot Laravel per instance lambat (±1–3 dtk) untuk request pertama.
 3. **Upload via base64** (Content Studio) menghasilkan body besar → perhatikan limit Vercel (4.5 MB function payload).
 4. **PHP bukan warga kelas satu di Vercel** — memakai builder komunitas `vercel-php`, risiko maintenance di luar kendali Vercel.
+5. **Runtime builder**: `vercel-php@0.8.0` (PHP 8.4, Node autodetect). **Jangan turunkan** ke `0.6.x` atau lebih lama — versi itu memakai `nodejs18.x` yang sudah discontinued dan build gagal dengan *"Runtime is using nodejs18.x, which is discontinued"*.
 5. **Seeder demo** berisi data visual; jalankan sekali di DB eksternal, jangan tiap request.
 
 ## Alternatif yang lebih pas untuk Laravel (stateful)
