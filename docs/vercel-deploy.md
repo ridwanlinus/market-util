@@ -13,18 +13,22 @@
 ## Environment Variables (wajib diatur di Vercel)
 
 ```
-APP_KEY=                # hasil php artisan key:generate --show
+APP_KEY=                # WAJIB — hasil php artisan key:generate --show
+                        # tanpa ini, enkripsi cookie/session gagal (error "No application encryption key")
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://<project>.vercel.app
 
-# database eksternal
+# database eksternal — WAJIB agar data tersimpan (SQLite di Vercel bersifat ephemeral)
 DB_CONNECTION=pgsql      # atau mysql
 DB_HOST=...
 DB_PORT=5432
 DB_DATABASE=...
 DB_USERNAME=...
 DB_PASSWORD=...
+
+# session harus persisten lintas instance → pakai database (bukan array/file)
+SESSION_DRIVER=database
 
 # storage (opsional tapi disarankan)
 FILESYSTEM_DISK=local    # local TIDAK persisten di Vercel!
@@ -36,18 +40,25 @@ Setelah env diatur, jalankan migrasi sekali (via terminal lokal atau menu Vercel
 
 ```
 Browser ──> vercel.json routes
-              ├─ /css, /js, /build, /storage  → @vercel/static (file publik)
-              └─ (semua URL lain)             → api/index.php (vercel-php)
-                                                   └─ Laravel handleRequest()
+              ├─ /favicon, /build, /css, /js, /storage  → file static di public/ (rewrite)
+              └─ (semua URL lain)                        → api/index.php (vercel-php function)
+                                                              └─ Laravel handleRequest()
 ```
+
+`vercel.json` memakai key **`functions`** (bukan `builds` yang legacy — memakai `builds` memunculkan warning "Build and Development Settings will not apply"). Blok `env` di dalamnya menyesuaikan Laravel agar jalan di filesystem function yang read-only:
+
+- `VIEW_COMPILED_PATH=/tmp/views` — compiled Blade ditulis ke `/tmp` (writable)
+- `LOG_CHANNEL=stderr` — log dikirim ke stderr (tertampil di Vercel Logs), bukan file
+- `CACHE_DRIVER=array` — cache per-instance di memori, tanpa write file
+- `APP_*_CACHE=/tmp/*.php` — aman bila nanti menjalankan `config:cache`
 
 File yang disertakan:
 
 | File | Fungsi |
 |------|--------|
-| `vercel.json` | Build static + fungsi PHP, routing asset vs Laravel |
+| `vercel.json` | Function PHP (`functions`) + routing asset static vs Laravel |
 | `api/index.php` | Entry serverless: boot Laravel (`handleRequest`) lalu `send()` |
-| `composer.lock` | Sudah ter-commit → install deterministik |
+| `composer.lock` | Sudah ter-commit → install deterministik (dijalankan builder saat build) |
 
 ## Batasan (jujur)
 
